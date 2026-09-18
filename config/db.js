@@ -51,7 +51,15 @@ pool.query("SELECT NOW()")
     console.log("✅ Database connected:", result.rows[0].now);
   })
   .catch((err) => {
-    console.error("❌ Database connection failed:", err.message);
+    // Connection-refused errors are AggregateErrors with an empty message,
+    // so fall back to the code / inner errors to see what actually failed.
+    const detail = err.message
+      || (err.errors || []).map((e) => e.message).join("; ")
+      || err.code;
+    console.error(
+      `❌ Database connection failed (${process.env.DB_HOST}:${process.env.DB_PORT}):`,
+      detail
+    );
   });
 
 module.exports = pool;

@@ -63,9 +63,14 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-app.get("/health", (req, res) => {
+const healthCheck = (req, res) => {
   res.json({ success: true, status_code: 200, message: "Dashboard backend running", data: null });
-});
+};
+
+// Elastic Beanstalk's load balancer health check hits "/" by default —
+// returning 404 there marks the instance unhealthy
+app.get("/", healthCheck);
+app.get("/health", healthCheck);
 
 // Catch-all for unmatched routes — without this, hitting a wrong URL in
 // production returns a raw stack trace instead of clean JSON
@@ -82,7 +87,8 @@ app.use((err, req, res, next) => {
 
 // IMPORTANT: no hardcoded port fallback assumption — most hosts assign
 // their own PORT via env var and ignore whatever you hardcode
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
+const port = process.env.PORT || 5000;
+// Bind to all interfaces so nginx / Docker can reach the app from outside the container
+app.listen(port, "0.0.0.0", () => {
   console.log(`Dashboard backend listening on port ${port}`);
 });
