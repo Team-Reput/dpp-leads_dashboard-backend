@@ -9,7 +9,7 @@ const pool = require("../config/db"); // your existing DB connection
 // POST /api/auth/login
 // Called when the user clicks "Sign in" on the login screen
 async function login(req, res) {
-  const { email, password, org } = req.body;
+  const { email, password } = req.body;
   // org = 'bluwin' or 'reput_ai' — whichever tab was selected
 
   try {
@@ -22,9 +22,11 @@ async function login(req, res) {
     );
 
     const found = result.rows[0].result;
+      
     // found.success will be false if no matching user exists
 
     if (!found.success) {
+      
       return res.status(401).json({
         success: false,
         status_code: 401,
@@ -38,7 +40,7 @@ async function login(req, res) {
       password,
       found.data.password_hash
     );
-
+   
     if (!passwordMatches) {
       return res.status(401).json({
         success: false,
