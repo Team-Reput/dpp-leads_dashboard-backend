@@ -31,9 +31,10 @@ async function getSubmissions(req, res) {
       company: row.company,
       contact_name: row.contact,
       contact_email: row.email,
+      role: row.role ?? '',
       category: row.category,
       export_markets: row.export_market,   // note: plural in frontend, singular in SQL
-      export_volume: row.export_volume ?? '',
+      // export_volume: row.export_volume ?? '',
       submitted: row.date,
       readiness_percent: row.score,
       band_label: row.band,
