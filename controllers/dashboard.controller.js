@@ -36,7 +36,8 @@ async function getSubmissions(req, res) {
       export_volume: row.export_volume ?? '',
       submitted: row.date,
       readiness_percent: row.score,
-      band_label: row.band
+      band_label: row.band,
+       demo_req: row.demo_req === true  
     }));
 
     return res.json({
@@ -67,7 +68,8 @@ async function getSubmissionDetail(req, res) {
 
     const categories = (raw.categories || []).map((cat) => ({
       label: cat.name,
-      status: STATUS_MAP[cat.status] || 'no'
+      status: STATUS_MAP[cat.status] || 'no',
+       percent: Number(cat.percent ?? 0) 
     }));
 
     const data = {
@@ -87,6 +89,8 @@ async function getSubmissionDetail(req, res) {
         addl_count: raw.addl_count ?? 0
       },
       categories,
+      demo_req: raw.demo_req === true, 
+
       followup: {
         assigned_rep: raw.followup?.assigned_rep ?? null,
         contacted: raw.followup?.contacted ?? false
