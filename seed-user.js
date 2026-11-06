@@ -7,7 +7,7 @@ async function seed() {
   const passwordHash = await bcrypt.hash('Reput@123', 10); // pick your real password
   const bluwinResult = await pool.query(
     `SELECT dbo.fn_usp_insert_dashboard_user($1, $2, $3) AS result`,
-    ['bluwin', 'g@gmail.com', passwordHash]
+    ['bluwin', 'Bluwin@gmail.com', passwordHash]
   );
   console.log('BluWin user:', bluwinResult.rows[0].result);
 
